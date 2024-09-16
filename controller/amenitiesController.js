@@ -1,11 +1,11 @@
-import Amenities from "../model/Amenities";
+import Amenities from "../model/Amenities.js";
 
 export const getAllAmenities = async (req, res) => {
   try {
     const amenities = await Amenities.find();
     res.status(200).json(amenities);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Error fetching amenities", error: error.message });
   }
 };
 
@@ -19,7 +19,7 @@ export const createAmenities = async (req, res) => {
     await amenities.save();
     res.status(201).json(amenities);
   } catch (error) {
-    res.status(500).json({ message: "Error creating amenities" });
+    res.status(500).json({ message: "Error creating amenities", error: error.message });
   }
 };
 
@@ -35,7 +35,7 @@ export const updateAmenities = async (req, res) => {
     }
     res.json({ message: "Amenities updated successfully", amenities });
   } catch (error) {
-    res.status(500).json({ message: "Error updating amenities" });
+    res.status(500).json({ message: "Error updating amenities", error: error.message });
   }
 };
 
@@ -47,7 +47,7 @@ export const deleteAmenities = async (req, res) => {
     }
     res.json({ message: "Amenities deleted successfully", amenities });
   } catch (error) {
-    res.status(500).json({ message: "Error deleting amenities" });
+    res.status(500).json({ message: "Error deleting amenities", error: error.message });
   }
 };
 
@@ -59,6 +59,6 @@ export const getAmenitiesById = async (req, res) => {
     }
     res.json(amenities);
   } catch (error) {
-    res.status(500).json({ message: "Error getting amenities" });
+    res.status(500).json({ message: "Error getting amenities", error: error.message });
   }
 };
