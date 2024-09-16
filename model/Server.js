@@ -2,9 +2,10 @@ import express, { json } from 'express';
 import dbconnection from '../database/config.db.js';
 import 'dotenv/config';
 import morgan from 'morgan';
-import routerAmenities  from '../Routes/Amenities.js'
+import routerAmenities from '../Routes/Amenities.js'
+import routerServices from '../Routes/Services.js'
 
-import cors  from 'cors';
+import cors from 'cors';
 
 
 
@@ -15,36 +16,34 @@ class Server {
         this.app.use(morgan('dev'));
         this.dbconnection();
         this.routes();
-        this.listen();
+        this.start();
         this.cors();
-       
-    }
 
+    }
+    start() {
+        this.app.listen(3000, () => {
+            console.log('Server is running on port 3000');
+        });
+    }
     async cors() {
         this.app.use(cors());
     }
 
-  
+
     async dbconnection() {
         try {
             await dbconnection();
-            console.log('Database connected');
         } catch (error) {
             console.error('Error connecting to database:', error);
         }
     }
 
     routes() {
-        this.app.use(express.json())
-        this.app.get('/', this.service.getAllServices
-        );
-        this.app.post('/', this.service.postService
-        );
-        this.app.put('/:id', this.service.putService)
-        this.app.delete('/:id', this.service.deleteService)
+        this.app.use('/', routerAmenities);
+        this.app.use('/', routerServices);
     }
 
 
 }
 
-export  default Server;
+export default Server;
