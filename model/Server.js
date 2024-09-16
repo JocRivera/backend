@@ -41,8 +41,8 @@ class Server {
         );
         this.app.post('/', this.service.postService
         );
-
-
+        this.app.put('/:id', this.service.putService)
+        this.app.delete('/:id', this.service.deleteService)
     }
 
 
