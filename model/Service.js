@@ -15,4 +15,4 @@ const serviceSchema = new mongoose.Schema({
     }
 });
 
-export default mongoose.model("Service", serviceSchema);
+export default mongoose.model("Service", serviceSchema, "service");

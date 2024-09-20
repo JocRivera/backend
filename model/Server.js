@@ -4,6 +4,8 @@ import 'dotenv/config';
 import morgan from 'morgan';
 import routerAmenities from '../Routes/Amenities.js'
 import routerServices from '../Routes/Services.js'
+import routerRoles from '../Routes/Rol.js'
+import routerPermissions from '../Routes/Permission.js'
 
 import cors from 'cors';
 
@@ -12,13 +14,15 @@ import cors from 'cors';
 class Server {
     constructor() {
         this.app = express();
-        this.app.use(json());
-        this.app.use(morgan('dev'));
+        this.middleware();
         this.dbconnection();
         this.routes();
         this.start();
-        this.cors();
-
+    }
+    middleware() {
+        this.app.use(json());
+        this.app.use(morgan('dev'));
+        this.app.use(cors()); // Configuración de CORS
     }
     start() {
         this.app.listen(3000, () => {
@@ -41,6 +45,8 @@ class Server {
     routes() {
         this.app.use('/', routerAmenities);
         this.app.use('/', routerServices);
+        this.app.use('/', routerRoles);
+        this.app.use('/', routerPermissions);
     }
 
 
