@@ -62,6 +62,20 @@ export class AuthController {
 
     async RefreshToken(req, res) { }
 
-    async VerifyToken(req, res) { }
-
+    async verifyToken(req, res) {
+        const { token } = req.cookies;
+        if (!token) {
+            return res.status(401).json({ message: 'No token provided' });
+        }
+        jwt.verify(token, process.env.JWT_SECRET, async (error, user) => {
+            if (error) {
+                return res.status(403).json({ message: 'Invalid token' });
+            }
+            const userFound = await User.findById(user.id);
+            if (!userFound) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+            res.json({ user: userFound });
+        })
+    }
 }
