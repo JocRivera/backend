@@ -1,4 +1,4 @@
-import User from '../models/user.model.js';
+import User from '../models/user.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -36,21 +36,29 @@ export class AuthController {
             if (!isMatch) return res.status(400).json({ message: 'Invalid password' });
             const token = jwt.sign({ id: userFound._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
             res.cookie('token', token, { httpOnly: true, secure: true });
-            res.json({ token,
+            res.json({
+                token,
                 user: {
                     id: userFound._id,
                     name: userFound.name,
                     email: userFound.email,
                     role: userFound.role
                 }
-             });
+            });
         }
         catch (error) {
             res.status(500).json({ message: 'Error logging in', error });
         }
     }
 
-    async Logout(req, res) { }
+    async Logout(req, res) {
+        try {
+            res.clearCookie('token');
+            res.json({ message: 'Logged out successfully' });
+        } catch (error) {
+            res.status(500).json({ message: 'Error logging out', error });
+        }
+    }
 
     async RefreshToken(req, res) { }
 

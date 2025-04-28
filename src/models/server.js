@@ -3,11 +3,13 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dbConnect from '../config/db.js';
+import authRoutes from '../routes/auth.routes.js';
 
 class Server {
     constructor() {
         this.app = express();
         this.config();
+        this.routes();
     }
     config() {
         dotenv.config();
