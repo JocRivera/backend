@@ -8,7 +8,10 @@ export class CartController {
 
     async createCart(req, res) {
         try {
-            const { userId } = req.params;
+            const userId = req.user.id;
+            const existingCart = await Cart.findOne({ user: userId });
+            if (existingCart) return res.status(200).json(existingCart);
+
             const cart = new Cart({ user: userId });
             const savedCart = await cart.save();
             res.status(201).json(savedCart);
@@ -17,21 +20,31 @@ export class CartController {
         }
     }
 
+
     async addProductToCart(req, res) {
+        console.log(req.body);
         try {
-            const { cartId } = req.params;
+            console.log(req.user);
+            const userId = req.user.id;
+            console.log(userId);
             const { productId, quantity } = req.body;
-            const cart = await Cart.findById(cartId);
-            if (!cart) return res.status(404).json({ message: 'Cart not found' });
-            const product = await Product.findById(productId);
-            if (!product) return res.status(404).json({ message: 'Product not found' });
-            cart.products.push({ product: productId, quantity });
+            console.log(productId, quantity);
+            const cart = await Cart.findOne({ user: userId }) || await new Cart({ user: userId }).save();
+            const productIndex = cart.products.findIndex(p => p.product.toString() === productId);
+
+            if (productIndex >= 0) {
+                cart.products[productIndex].quantity += quantity;
+            } else {
+                cart.products.push({ product: productId, quantity });
+            }
+
             const updatedCart = await cart.save();
             res.status(200).json(updatedCart);
         } catch (error) {
             res.status(500).json({ message: 'Error adding product to cart', error });
         }
     }
+
     async removeProductFromCart(req, res) {
         try {
             const { cartId } = req.params;
