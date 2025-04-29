@@ -64,8 +64,8 @@ export class CartController {
 
             // Transformar la respuesta para que solo devuelva el formato deseado
             const formattedCart = cart.products.map(item => ({
-                id: item.product.id.toString(), // Convertir ObjectId a string
-                title: item.product.title, // Suponiendo que el producto tiene un campo 'title'
+                _id: item.product.id.toString(), // Convertir ObjectId a string
+                tittle: item.product.title, // Suponiendo que el producto tiene un campo 'title'
                 quantity: item.quantity
             }));
 
