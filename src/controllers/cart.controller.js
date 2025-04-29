@@ -43,14 +43,15 @@ export class CartController {
 
     async removeProductFromCart(req, res) {
         try {
-            const { cartId } = req.params;
+            const userId = req.user.id;
             const { productId } = req.body;
-            const cart = await Cart.findById(cartId);
+            const cart = await Cart.findOne({ user: userId });
             if (!cart) return res.status(404).json({ message: 'Cart not found' });
             cart.products = cart.products.filter(item => item.product.toString() !== productId);
             const updatedCart = await cart.save();
             res.status(200).json(updatedCart);
         } catch (error) {
+            console.error(error);
             res.status(500).json({ message: 'Error removing product from cart', error });
         }
     }
@@ -65,8 +66,9 @@ export class CartController {
             // Transformar la respuesta para que solo devuelva el formato deseado
             const formattedCart = cart.products.map(item => ({
                 _id: item.product.id.toString(), // Convertir ObjectId a string
-                tittle: item.product.title, // Suponiendo que el producto tiene un campo 'title'
-                quantity: item.quantity
+                tittle: item.product.tittle, // Suponiendo que el producto tiene un campo 'title'
+                quantity: item.quantity,
+                price: item.product.price, // Suponiendo que el producto tiene un campo 'price'
             }));
 
             res.status(200).json({ cart: formattedCart });
