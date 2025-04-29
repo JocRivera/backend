@@ -22,13 +22,9 @@ export class CartController {
 
 
     async addProductToCart(req, res) {
-        console.log(req.body);
         try {
-            console.log(req.user);
             const userId = req.user.id;
-            console.log(userId);
             const { productId, quantity } = req.body;
-            console.log(productId, quantity);
             const cart = await Cart.findOne({ user: userId }) || await new Cart({ user: userId }).save();
             const productIndex = cart.products.findIndex(p => p.product.toString() === productId);
 
