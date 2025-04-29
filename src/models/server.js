@@ -4,7 +4,9 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dbConnect from '../config/db.js';
 import authRoutes from '../routes/auth.routes.js';
-
+import cartRoutes from '../routes/cart.routes.js';
+import productRoutes from '../routes/product.routes.js';
+import morgan from 'morgan';
 class Server {
     constructor() {
         this.app = express();
@@ -13,6 +15,7 @@ class Server {
     }
     config() {
         dotenv.config();
+        this.app.use(morgan('dev')); // 'dev' es un formato predefinido para logs
         this.app.use(cors({
             origin: 'http://localhost:5173',
             credentials: true
@@ -23,6 +26,8 @@ class Server {
     }
     routes() {
         this.app.use('/api/auth', authRoutes);
+        this.app.use('/api/cart', cartRoutes);
+        this.app.use('/api/products', productRoutes);
     }
 
     start() {
