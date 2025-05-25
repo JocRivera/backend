@@ -6,6 +6,7 @@ import dbConnect from '../config/db.js';
 import authRoutes from '../routes/auth.routes.js';
 import cartRoutes from '../routes/cart.routes.js';
 import productRoutes from '../routes/product.routes.js';
+import orderRoutes from '../routes/order.routes.js';
 import morgan from 'morgan';
 class Server {
     constructor() {
@@ -28,6 +29,7 @@ class Server {
         this.app.use('/api/auth', authRoutes);
         this.app.use('/api/cart', cartRoutes);
         this.app.use('/api/products', productRoutes);
+        this.app.use('/api/orders', orderRoutes);
     }
 
     start() {
