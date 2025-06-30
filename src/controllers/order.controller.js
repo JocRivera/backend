@@ -42,7 +42,16 @@ export class OrderController {
                 total: savedOrder.totalAmount,
                 createdAt: savedOrder.createdAt,
                 user: req.user.name || req.user.email || `ID: ${req.user.id}`,
-                message: `🛒 Nueva orden de ${req.user.name || 'un cliente'} por $${savedOrder.totalAmount}`,
+                message: `Nueva orden de ${req.user.name} por $${savedOrder.totalAmount}`,
+                details: {
+                    products: savedOrder.products.map(item => ({
+                        name: item.product.name,
+                        quantity: item.quantity,
+                        price: item.product.price
+                    })),
+                    shippingAddress: savedOrder.shippingAddress,
+                    paymentMethod: savedOrder.paymentMethod
+                }
             });
 
             // 📧 Enviar correo al admin (opcional)
