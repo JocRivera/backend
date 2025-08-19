@@ -10,6 +10,7 @@ import orderRoutes from '../routes/order.routes.js';
 import morgan from 'morgan';
 import { createServer } from 'http';
 import { initSocket } from '../config/socket.js';
+import paymentRoutes from '../routes/payment.routes.js'; // Importar rutas de pagos
 
 class Server {
     constructor() {
@@ -39,6 +40,7 @@ class Server {
         this.app.use('/api/cart', cartRoutes);
         this.app.use('/api/products', productRoutes);
         this.app.use('/api/orders', orderRoutes);
+        this.app.use('/api/payments', paymentRoutes); // Agregar ruta de pagos
     }
 
     // ❌ REMOVE: Esta función duplica los eventos ya manejados en socket.js

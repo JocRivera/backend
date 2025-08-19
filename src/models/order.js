@@ -31,7 +31,7 @@ const orderSchema = new Schema({
     },
     paymentMethod: {
         type: String,
-        enum: ['Credit Card', 'PayPal', 'Mercado Pago'],
+        enum: ['card', 'paypal', 'mercadopago'],
         required: true,
     },
     paymentStatus: {
@@ -39,6 +39,8 @@ const orderSchema = new Schema({
         enum: ['Pending', 'Completed', 'Failed'],
         default: 'Pending',
     },
+    mercadopagoPaymentId: { type: String, unique: true, sparse: true }, // unique para evitar duplicados
+    mercadopagoMerchantOrderId: { type: String },
     status: {
         type: String,
         enum: ['Pending', 'Shipped', 'Delivered', 'Cancelled'],
