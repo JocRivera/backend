@@ -31,13 +31,13 @@ const orderSchema = new Schema({
     },
     paymentMethod: {
         type: String,
-        enum: ['card', 'paypal', 'mercadopago'],
+        enum: ['card', 'PayPal', 'MercadoPago'],
         required: true,
     },
     paymentStatus: {
         type: String,
-        enum: ['Pending', 'Completed', 'Failed'],
-        default: 'Pending',
+        enum: ['pending', 'approved', 'rejected', 'refunded', 'cancelled'],
+        default: 'pending',
     },
     mercadopagoPaymentId: { type: String, unique: true, sparse: true }, // unique para evitar duplicados
     mercadopagoMerchantOrderId: { type: String },

@@ -3,6 +3,11 @@ import Cart from '../models/cart.js';
 import Product from '../models/product.js';
 import { getSocket } from '../config/socket.js';
 import nodemailer from 'nodemailer';
+import { MercadoPagoConfig, Payment } from 'mercadopago';
+
+const client = new MercadoPagoConfig({ accessToken: "APP_USR-4126003856086907-081909-e368e86d70bf7996906a4bef3a874f33-2638908578" });
+const paymentInstance = new Payment(client); // Crea una instancia de Payment usando el cliente configurado
+
 export class OrderController {
     constructor() { }
 
@@ -78,14 +83,15 @@ export class OrderController {
     }
     // ⭐ NUEVO MÉTODO para manejar la confirmación de pago de Mercado Pago
     async createOrderFromMercadoPago(req, res) {
-        // Los datos llegan del frontend, que los extrajo de la URL de redirección de MP
         const { paymentId, status, externalReference, merchantOrderId } = req.body;
 
         try {
             // 1. **Verificar el pago con Mercado Pago (CRÍTICO para seguridad)**
-            // No confíes solo en los parámetros del frontend. Siempre verifica con la API de MP.
-            const payment = await mercadopago.payment.findById(paymentId);
-            const mpPaymentStatus = payment.body.status; // Estado real del pago en MP
+            // Usa la instancia 'paymentInstance' que creaste
+            const mpPaymentDetails = await paymentInstance.get({ id: paymentId }); // Forma correcta de llamar a 'get' con el ID
+
+            // Accede al estado desde el objeto de detalles
+            const mpPaymentStatus = mpPaymentDetails.status;
 
             if (mpPaymentStatus !== "approved") {
                 console.log("Pago no aprobado por Mercado Pago (estado real):", mpPaymentStatus);
@@ -97,7 +103,6 @@ export class OrderController {
             }
 
             // 2. **Evitar duplicados**: Verifica si la orden ya existe (por mercadopagoPaymentId)
-            // Esto es CRÍTICO para evitar que se creen múltiples órdenes por el mismo pago.
             const existingOrder = await Order.findOne({ mercadopagoPaymentId: paymentId });
             if (existingOrder) {
                 console.log("Orden ya existe para este paymentId:", paymentId);
@@ -109,30 +114,20 @@ export class OrderController {
             }
 
             // 3. **Recuperar la información del carrito/sesión del usuario**
-            // Aquí necesitas una forma de asociar el pago a un carrito o usuario.
-            // Si `externalReference` fue el `userId` o un `cartId` o simplemente estás asumiendo
-            // que `req.user.id` está disponible porque hay un `verifyToken`
-            // ANTES de esta ruta.
-
             const userId = req.user.id; // Asumiendo que `verifyToken` ya puso el user en `req.user`
             const cart = await Cart.findOne({ user: userId }).populate('products.product');
 
             if (!cart || cart.products.length === 0) {
-                // Esto podría pasar si el carrito ya fue procesado o no existe para el usuario
                 console.warn("Carrito no encontrado o vacío para el usuario:", userId);
                 return res.status(404).json({ message: "Carrito no encontrado o ya procesado para este usuario." });
             }
-
-            const totalAmount = cart.products.reduce((total, item) => {
-                return total + (item.product.price * item.quantity);
-            }, 0);
 
             // 4. **Crear la nueva orden**
             const newOrder = new Order({
                 user: userId,
                 products: cart.products,
-                totalAmount: payment.body.transaction_amount, // Usa el monto real aprobado por MP
-                shippingAddress: cart.shippingAddress || req.body.shippingAddress, // Intenta obtener de carrito o del body (frontend)
+                totalAmount: mpPaymentDetails.transaction_amount, // Usa el monto real aprobado por MP
+                shippingAddress: cart.shippingAddress || req.body.shippingAddress,
                 paymentMethod: "MercadoPago",
                 paymentStatus: mpPaymentStatus, // Será 'approved' aquí
                 mercadopagoPaymentId: paymentId,
@@ -179,7 +174,7 @@ export class OrderController {
                 from: `"Tienda Online" <${process.env.EMAIL_USER}>`,
                 to: process.env.ADMIN_EMAIL,
                 subject: 'Nueva orden realizada con Mercado Pago',
-                text: `El usuario con ID ${userId} ha realizado una nueva orden con Mercado Pago.\n\nTotal: $${totalAmount}\n\nID de orden: ${savedOrder._id}`,
+                text: `El usuario con ID ${userId} ha realizado una nueva orden con Mercado Pago.\n\nTotal: $${mpPaymentDetails.transaction_amount}\n\nID de orden: ${savedOrder._id}`, // Usar el monto de MP
             });
 
             return res.status(201).json({
