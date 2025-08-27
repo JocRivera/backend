@@ -11,16 +11,11 @@ const preference = new Preference(client);
 export class PaymentController {
   constructor() {}
   async createPayment(req, res) {
+    const { items } = req.body;
     preference
       .create({
         body: {
-          items: [
-            {
-              title: "Mi producto",
-              quantity: 1,
-              unit_price: 2000,
-            },
-          ],
+          items,
           back_urls: {
             success: "https://r6q0x0dq-5173.use2.devtunnels.ms/checkout/success", // <--- Tu frontend leerá esto
             failure: "https://r6q0x0dq-5173.use2.devtunnels.ms/checkout/failure",
