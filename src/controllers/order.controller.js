@@ -86,7 +86,7 @@ export class OrderController {
       transporter.use("compile", hbs(hbsOptions));
       await transporter.sendMail({
         from: `"Tienda Online" <${process.env.EMAIL_USER}>`,
-        to: process.env.ADMIN_EMAIL,
+        to: [process.env.ADMIN_EMAIL, userEmail],
         subject: "Nueva orden realizada",
         template: "orderConfirmation",
         context: {
