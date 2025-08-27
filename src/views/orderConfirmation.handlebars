@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmación de Orden {{orderId}}</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <style>
+        :root {
+            color-scheme: light dark;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f5f7fa;
+            font-family: Arial, Helvetica, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        table {
+            border-spacing: 0;
+        }
+
+        img {
+            border: 0;
+        }
+
+        .wrapper {
+            width: 100%;
+            table-layout: fixed;
+            background: #f5f7fa;
+            padding: 20px 0;
+        }
+
+        .main {
+            background: #ffffff;
+            margin: 0 auto;
+            width: 600px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .header {
+            background: #111d01;
+            padding: 20px 30px;
+            color: #ffffff;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .content {
+            padding: 30px;
+            color: #1a202c;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .content h2 {
+            margin: 0 0 16px;
+            font-size: 18px;
+            color: #111d01;
+        }
+
+        .meta-table {
+            width: 100%;
+            margin: 0 0 18px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .meta-table td {
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+
+        .meta-table tr:nth-child(odd) {
+            background: #f8fafc;
+        }
+
+        .products {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0 24px;
+        }
+
+        .products thead th {
+            background: #111d01;
+            color: #ffffff;
+            padding: 10px 8px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
+        .products tbody td {
+            border-bottom: 1px solid #e2e8f0;
+            padding: 10px 8px;
+            font-size: 13px;
+            vertical-align: top;
+        }
+
+        .products tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #e7f1ff;
+            color: #111d01;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: .5px;
+        }
+
+        .total-box {
+            background: #f1f5f9;
+            padding: 16px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .total-line {
+            display: flex;
+            justify-content: space-between;
+            margin: 4px 0;
+        }
+
+        .grand {
+            font-size: 16px;
+            font-weight: 700;
+            color: #111d01;
+        }
+
+        .footer {
+            background: #ffffff;
+            width: 600px;
+            margin: 8px auto 0;
+            text-align: center;
+            font-size: 11px;
+            color: #6b7280;
+            padding: 15px 10px 30px;
+        }
+
+        a {
+            color: #111d01;
+            text-decoration: none;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #111d01;
+            color: #ffffff !important;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: .5px;
+        }
+
+        @media (max-width:620px) {
+
+            .main,
+            .footer {
+                width: 100% !important;
+                border-radius: 0;
+            }
+
+            .content {
+                padding: 22px 18px;
+            }
+
+            .header {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <span
+        style="display:none !important; visibility:hidden; opacity:0; color:transparent; height:0; width:0; overflow:hidden;">Resumen
+        de tu compra #{{orderId}}</span>
+
+    <table class="wrapper" role="presentation" width="100%">
+        <tr>
+            <td align="center">
+                <table class="main" role="presentation">
+                    <tr>
+                        <td class="header">
+                            <h1>Confirmación de Pago</h1>
+                            <div style="font-size:13px; margin-top:4px;">Orden #{{orderId}}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="content">
+                            <h2>Hola {{userName}}, gracias por tu compra.</h2>
+                            <p>Hemos recibido y aprobado tu pago mediante <strong>{{paymentMethod}}</strong>. A
+                                continuación encontrarás el detalle de tu orden.</p>
+
+                            <table class="meta-table" role="presentation">
+                                <tr>
+                                    <td><strong>ID de Orden:</strong></td>
+                                    <td>{{orderId}}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Método de Pago:</strong></td>
+                                    <td>{{paymentMethod}}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Dirección de Envío:</strong></td>
+                                    <td style="font-weight:600;">{{shippingAddress.street}}</td>
+                                    <td style="text-align:center;">{{shippingAddress.city}}</td>
+                                </tr>
+                            </table>
+
+                            <table class="products" role="presentation">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:left;">Producto</th>
+                                        <th style="text-align:center;">Cant.</th>
+                                        <th style="text-align:right;">Precio</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each products}}
+                                    <tr>
+                                        <td style="font-weight:600;">{{title}}</td>
+                                        <td style="text-align:center;">{{quantity}}</td>
+                                        <td style="text-align:right;">$ {{price}}</td>
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+
+                            <div class="total-box">
+                                <div class="total-line grand">
+                                    <span>Total Pagado</span>
+                                    <span> ${{totalAmount}}</span>
+                                </div>
+                            </div>
+
+                            <p style="margin:24px 0 14px;">Puedes revisar el estado de tu orden iniciando sesión en tu
+                                cuenta.</p>
+                            <p style="text-align:center;">
+                                <a class="btn" href="{{portalUrl}}">Ver mi orden</a>
+                            </p>
+                            <p style="font-size:12px; color:#64748b; margin-top:28px;">
+                                Si tienes preguntas responde a este correo o contáctanos en soporte.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+                <div class="footer">
+                    ©2025 Todos los derechos reservados.
+                    <br>
+                    No responda este correo, es generado automáticamente.
+                </div>
+            </td>
+        </tr>

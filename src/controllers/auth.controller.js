@@ -57,7 +57,7 @@ export class AuthController {
                 role: userFound.role,
                 email: userFound.email,
                 name: userFound.name
-            }, process.env.JWT_SECRET, { expiresIn: '1h' });
+            }, process.env.JWT_SECRET, { expiresIn: '24h' });
             res.cookie('token', token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production', // solo secure en producción
@@ -93,26 +93,32 @@ export class AuthController {
     async RefreshToken(req, res) { }
 
     async verifyToken(req, res) {
-        const { token } = req.cookies;
-        if (!token) {
-            return res.status(401).json({ message: 'No token provided' });
-        }
-        jwt.verify(token, process.env.JWT_SECRET, async (error, decoded) => {
-            if (error) {
-                return res.status(403).json({ message: 'Invalid token' });
-            }
-            const userFound = await User.findById(decoded.id);
-            if (!userFound) {
-                return res.status(404).json({ message: 'User not found' });
-            }
-            res.json({
-                user: {
-                    id: userFound._id,
-                    name: userFound.name,
-                    email: userFound.email,
-                    role: userFound.role
-                }
-            });
-        })
+    // Buscar primero en cookies, si no existe buscar en headers
+    const token = req.cookies.token || (req.headers['authorization']?.split(' ')[1]);
+
+    if (!token) {
+        return res.status(401).json({ message: 'No token provided' });
     }
+
+    jwt.verify(token, process.env.JWT_SECRET, async (error, decoded) => {
+        if (error) {
+            return res.status(403).json({ message: 'Invalid token' });
+        }
+
+        const userFound = await User.findById(decoded.id);
+        if (!userFound) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.json({
+            user: {
+                id: userFound._id,
+                name: userFound.name,
+                email: userFound.email,
+                role: userFound.role
+            }
+        });
+    });
+}
+
 }
