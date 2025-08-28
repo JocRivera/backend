@@ -30,8 +30,8 @@ class Server {
       cors({
         origin: [
           "http://localhost:5173",
-          "https://r6q0x0dq-5173.use2.devtunnels.ms",
-          "https://r6q0x0dq-3000.use2.devtunnels.ms", // Por si el frontend llama al backend
+          "https://lxwb2d7k-5173.use2.devtunnels.ms",
+          "https://lxwb2d7k-3000.use2.devtunnels.ms", // Por si el frontend llama al backend
         ],
         credentials: true,
       })
