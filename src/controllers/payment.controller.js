@@ -17,9 +17,9 @@ export class PaymentController {
         body: {
           items,
           back_urls: {
-            success: "https://r6q0x0dq-5173.use2.devtunnels.ms/checkout/success", // <--- Tu frontend leerá esto
-            failure: "https://r6q0x0dq-5173.use2.devtunnels.ms/checkout/failure",
-            pending: "https://r6q0x0dq-5173.use2.devtunnels.ms/checkout/pending",
+            success: process.env.CLIENT_URL + "checkout/success", // <--- Tu frontend leerá esto
+            failure: process.env.CLIENT_URL + "checkout/failure",
+            pending: process.env.CLIENT_URL + "checkout/pending",
           },
           auto_return: "approved",
           // notification_url: "https://www.tu-dominio.com/notifications",

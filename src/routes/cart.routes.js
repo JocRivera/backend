@@ -7,6 +7,7 @@ const cartController = new CartController();
 cartRoutes.post('/create', verifyToken, cartController.createCart);
 cartRoutes.post('/add', verifyToken, cartController.addProductToCart);
 cartRoutes.post('/remove', verifyToken, cartController.removeProductFromCart);
+cartRoutes.post('/sync', verifyToken, cartController.syncCart);
 cartRoutes.get('/', verifyToken, cartController.getCart);
 cartRoutes.get('/user/', cartController.getUserCart);
 cartRoutes.delete('/clear', cartController.clearCart);

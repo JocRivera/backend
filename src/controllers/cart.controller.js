@@ -20,7 +20,6 @@ export class CartController {
         }
     }
 
-
     async addProductToCart(req, res) {
         try {
             const userId = req.user.id;
@@ -77,8 +76,6 @@ export class CartController {
         }
     }
 
-
-
     async getUserCart(req, res) {
         try {
             const { userId } = req.params;
@@ -89,6 +86,7 @@ export class CartController {
             res.status(500).json({ message: 'Error getting user cart', error });
         }
     }
+
     async clearCart(req, res) {
         try {
             const { cartId } = req.params;
@@ -99,6 +97,28 @@ export class CartController {
             res.status(200).json(updatedCart);
         } catch (error) {
             res.status(500).json({ message: 'Error clearing cart', error });
+        }
+    }
+
+    async syncCart(req, res){
+        try {
+            const userId = req.user.id;
+            const { products } = req.body; // Array de productos con { productId, quantity }
+            let cart = await Cart.findOne({ user: userId }) || await new Cart({ user: userId }).save();
+
+            for (const item of products) {
+                const productIndex = cart.products.findIndex(p => p.product.toString() === item.productId);
+                if (productIndex >= 0) {
+                    cart.products[productIndex].quantity = item.quantity; // Actualiza la cantidad
+                } else {
+                    cart.products.push({ product: item.productId, quantity: item.quantity });
+                }
+            }
+
+            const updatedCart = await cart.save();
+            res.status(200).json(updatedCart);
+        } catch (error) {
+            res.status(500).json({ message: 'Error syncing cart', error });
         }
     }
 }

@@ -21,13 +21,6 @@ export const initSocket = (server) => {
             if (token) {
                 const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-                console.log('User authenticated:', {
-                    id: decoded.id,
-                    role: decoded.role,
-                    email: decoded.email,
-                    name: decoded.name
-                });
-
                 // Unir admin a la sala admin
                 if (decoded.role === 'admin') {
                     socket.join('admin');

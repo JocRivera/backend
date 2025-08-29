@@ -31,7 +31,6 @@ class Server {
         origin: [
           "http://localhost:5173",
           "https://lxwb2d7k-5173.use2.devtunnels.ms",
-          "https://lxwb2d7k-3000.use2.devtunnels.ms", // Por si el frontend llama al backend
         ],
         credentials: true,
       })

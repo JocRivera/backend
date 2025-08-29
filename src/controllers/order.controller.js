@@ -184,10 +184,6 @@ export class OrderController {
       });
 
       const savedOrder = await newOrder.save();
-      console.log(
-        "Orden creada exitosamente por Mercado Pago:",
-        savedOrder._id
-      );
 
       // 5. **Vaciar carrito después de guardar la orden**
       cart.products = [];
